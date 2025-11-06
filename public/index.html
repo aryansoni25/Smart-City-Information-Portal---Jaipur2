@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart City Jaipur - Heritage & Development Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Registration Modal */
+        .modal {
+            display: flex;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h2 {
+            color: #ff6f61;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            border: none;
+            display: block;
+        }
+
+        .modal-header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid #ffe8e8;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ff6f61;
+            box-shadow: 0 0 0 3px rgba(255,111,97,0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #ff6f61 0%, #ff8577 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,111,97,0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background: linear-gradient(135deg, #ff6f61 0%, #ff8577 100%);
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover, nav a.active {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, #ff6f61 0%, #ff8577 100%);
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .welcome-banner p {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Home Page */
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(rgba(255,111,97,0.1), rgba(255,111,97,0.05));
+            border-radius: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            color: #ff6f61;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            background: #ff6f61;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255,111,97,0.3);
+        }
+
+        .btn:hover {
+            background: #ff8577;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255,111,97,0.4);
+        }
+
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #ff6f61;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .card h3 {
+            color: #ff6f61;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        /* Status Indicators */
+        .status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status.good {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .status.moderate {
+            background: #FFC107;
+            color: #333;
+        }
+
+        .status.normal {
+            background: #2196F3;
+            color: white;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+
+        th, td {
+            padding: 1.5rem;
+            text-align: left;
+        }
+
+        th {
+            background: #ff6f61;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #fff5f5;
+        }
+
+        tr:hover {
+            background: #ffe8e8;
+        }
+
+        /* Clock */
+        .clock {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .clock h2 {
+            color: #ff6f61;
+            margin-bottom: 1rem;
+        }
+
+        .time-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+
+        .date-display {
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Heritage Sites */
+        .heritage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .heritage-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .heritage-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .heritage-icon {
+            font-size: 4rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #ff6f61 0%, #ff8577 100%);
+            text-align: center;
+        }
+
+        .heritage-content {
+            padding: 1.5rem;
+        }
+
+        .heritage-content h3 {
+            color: #ff6f61;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Map Container */
+        .map-container {
+            margin-top: 2rem;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        h2 {
+            color: #ff6f61;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            border-bottom: 3px solid #ff6f61;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            .time-display {
+                font-size: 2rem;
+            }
+
+            .modal-content {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Registration Modal -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🏛️ Welcome to Smart City Jaipur</h2>
+                <p>Please register to access the portal</p>
+            </div>
+            <div id="successMessage" class="success-message"></div>
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                    <div class="error-message" id="nameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                    <div class="error-message" id="emailError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="mobile">Mobile Number *</label>
+                    <input type="tel" id="mobile" name="mobile" required placeholder="Enter 10 digit mobile number" pattern="[0-9]{10}">
+                    <div class="error-message" id="mobileError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="location">Where do you live? *</label>
+                    <select id="location" name="location" required>
+                        <option value="">-- Select Location --</option>
+                        <option value="Jaipur">Jaipur</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Mumbai">Mumbai</option>
+                        <option value="Bangalore">Bangalore</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Hyderabad">Hyderabad</option>
+                        <option value="Pune">Pune</option>
+                        <option value="Ahmedabad">Ahmedabad</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <div class="error-message" id="locationError"></div>
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">Register & Continue</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Welcome Banner -->
+    <div id="welcomeBanner" class="welcome-banner" style="display: none;">
+        <p>👋 Welcome, <span id="userName"></span>! You're accessing from <span id="userLocation"></span></p>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="#home" class="nav-link active" onclick="showPage('home')">Home</a></li>
+            <li><a href="#dashboard" class="nav-link" onclick="showPage('dashboard')">Dashboard</a></li>
+            <li><a href="#services" class="nav-link" onclick="showPage('services')">Services</a></li>
+            <li><a href="#heritage" class="nav-link" onclick="showPage('heritage')">Heritage</a></li>
+            <li><a href="#about" class="nav-link" onclick="showPage('about')">About</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <div class="hero">
+                <h1>🏛️ Welcome to Smart City Jaipur</h1>
+                <p>Jaipur, the Pink City, blends tradition with technology under the Smart City Mission — improving infrastructure, digital services, and sustainability while preserving its royal heritage. Experience the perfect harmony of ancient grandeur and modern innovation.</p>
+                <div class="hero-buttons">
+                    <button class="btn" onclick="showPage('dashboard')">View Dashboard</button>
+                    <button class="btn" onclick="showPage('services')">City Services</button>
+                    <button class="btn" onclick="showPage('heritage')">Explore Heritage</button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>📊 Smart Infrastructure</h3>
+                    <p>Modern infrastructure with IoT-enabled systems for efficient city management and real-time monitoring.</p>
+                </div>
+                <div class="card">
+                    <h3>🌿 Sustainable Development</h3>
+                    <p>Green initiatives and sustainable practices for a cleaner, eco-friendly Jaipur.</p>
+                </div>
+                <div class="card">
+                    <h3>🏰 Heritage Conservation</h3>
+                    <p>Preserving our rich cultural heritage while embracing technological advancement.</p>
+                </div>
+                <div class="card">
+                    <h3>💡 Digital Services</h3>
+                    <p>Citizen-centric e-governance and digital solutions for seamless urban living.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page">
+            <h2>📊 City Dashboard</h2>
+            
+            <div class="clock">
+                <h2>⏰ Jaipur Local Time</h2>
+                <div class="time-display" id="clock">--:--:--</div>
+                <div class="date-display" id="date">Loading...</div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>City Service</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Waste Management</td>
+                        <td><span class="status good">✅ Good</span></td>
+                        <td>Regular collection & smart bins deployed</td>
+                    </tr>
+                    <tr>
+                        <td>Traffic Control</td>
+                        <td><span class="status moderate">🚦 Moderate</span></td>
+                        <td>Smart signals at 50+ junctions</td>
+                    </tr>
+                    <tr>
+                        <td>Water Supply</td>
+                        <td><span class="status normal">💧 Normal</span></td>
+                        <td>24/7 monitoring system active</td>
+                    </tr>
+                    <tr>
+                        <td>Street Lights</td>
+                        <td><span class="status good">💡 Functional</span></td>
+                        <td>LED lights with auto sensors</td>
+                    </tr>
+                    <tr>
+                        <td>Wi-Fi Zones</td>
+                        <td><span class="status good">📶 Active</span></td>
+                        <td>100+ public hotspots operational</td>
+                    </tr>
+                    <tr>
+                        <td>Public Transport</td>
+                        <td><span class="status normal">🚌 Normal</span></td>
+                        <td>Metro & bus tracking available</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="dashboard-grid" style="margin-top: 3rem;">
+                <div class="card">
+                    <h3>Population</h3>
+                    <p style="font-size: 2rem; color: #ff6f61; font-weight: 700;">3.1M+</p>
+                </div>
+                <div class="card">
+                    <h3>Smart Parking Zones</h3>
+                    <p style="font-size: 2rem; color: #ff6f61; font-weight: 700;">45+</p>
+                </div>
+                <div class="card">
+                    <h3>Heritage Sites</h3>
+                    <p style="font-size: 2rem; color: #ff6f61; font-weight: 700;">100+</p>
+                </div>
+                <div class="card">
+                    <h3>Tourist Visits/Year</h3>
+                    <p style="font-size: 2rem; color: #ff6f61; font-weight: 700;">5M+</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Page -->
+        <div id="services" class="page">
+            <h2>🛠️ City Services</h2>
+            <p style="margin-bottom: 2rem; font-size: 1.1rem;">Discover the smart services that make Jaipur a model city for sustainable urban development.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>🅿️ Smart Parking</strong></td>
+                        <td>Digital parking zones with e-payment options and real-time availability tracking through mobile apps.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>📶 Public Wi-Fi</strong></td>
+                        <td>Free Wi-Fi hotspots in main markets, tourist places, and public areas for seamless connectivity.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>💡 Smart Lighting</strong></td>
+                        <td>Automatic LED lighting system for roads and parks with motion sensors for energy efficiency.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>💧 Water Management</strong></td>
+                        <td>Real-time monitoring and supply regulation with leak detection and water quality sensors.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>🚌 Smart Transport</strong></td>
+                        <td>GPS-enabled buses, metro connectivity, and mobile apps for real-time tracking and ticketing.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>🗑️ Waste Management</strong></td>
+                        <td>IoT-enabled smart bins with automated collection and segregation for cleaner streets.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>🏥 E-Health Services</strong></td>
+                        <td>Online doctor consultations, digital health records, and ambulance tracking systems.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>🌳 Environment Monitoring</strong></td>
+                        <td>Air quality sensors and pollution monitoring systems across the city.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Heritage Page -->
+        <div id="heritage" class="page">
+            <h2>🏰 Heritage & Tourist Sites</h2>
+            <p style="margin-bottom: 2rem; font-size: 1.1rem;">Experience the royal grandeur of Jaipur's magnificent heritage sites, where history comes alive amidst modern smart city initiatives.</p>
+
+            <div class="heritage-grid">
+                <div class="heritage-card">
+                    <div class="heritage-icon"><img src="https://www.rajasthanplaces.com/wp-content/uploads/2024/07/Amer-Fort-Jaipur.webp" alt="" width="300" height="200"></div>
+                    <div class="heritage-content">
+                        <h3>Amber Fort</h3>
+                        <p>Majestic hill fort known for its stunning Rajput architecture, intricate mirror work, and famous elephant rides. A UNESCO World Heritage Site.</p>
+                    </div>
+                </div>
+
+                <div class="heritage-card">
+                    <div class="heritage-icon"><img src="https://res.cloudinary.com/kmadmin/image/upload/v1725451960/kiomoi/Hawa_Mahal_5279.webp" alt="" height="200" width="300"></div>
+                    <div class="heritage-content">
+                        <h3>Hawa Mahal</h3>
+                        <p>The iconic Palace of Winds, famous for its pink sandstone façade with 953 small windows designed for royal ladies to observe street life.</p>
+                    </div>
+                </div>
+
+                <div class="heritage-card">
+                    <div class="heritage-icon"><img src="https://www.trawell.in/admin/images/upload/151648398Jaipur_Jantar_Mantar_Main.jpg" alt="" height="200" width="300"></div>
+                    <div class="heritage-content">
+                        <h3>Jantar Mantar</h3>
+                        <p>UNESCO World Heritage astronomical observatory featuring the world's largest stone sundial and 19 architectural astronomical instruments.</p>
+                    </div>
+                </div>
+
+                <div class="heritage-card">
+                    <div class="heritage-icon"><img src="https://influencerbookofworldrecords.com/AdminAssets/assets/img/blog/1746277171.webp" alt="" height="200" width="300"></div>
+                    <div class="heritage-content">
+                        <h3>City Palace</h3>
+                        <p>Royal residence showcasing a beautiful blend of Rajasthani and Mughal architecture, housing museums with textiles, paintings, and artifacts.</p>
+                    </div>
+                </div>
+
+                <div class="heritage-card">
+                    <div class="heritage-icon"><img src="https://www.fabhotels.com/blog/wp-content/uploads/2019/06/Nahargarh-fort_600.jpg" alt="" height="200" width="300"></div>
+                    <div class="heritage-content">
+                        <h3>Nahargarh Fort</h3>
+                        <p>Scenic hilltop fort offering breathtaking panoramic views of Jaipur city, especially stunning during sunset and at night.</p>
+                    </div>
+                </div>
+
+                <div class="heritage-card">
+                    <div class="heritage-icon"><img src="https://www.jaipurmetro.com/locations/jal-mahal-1.jpg" alt="" height="200" width="300"></div>
+                    <div class="heritage-content">
+                        <h3>Jal Mahal</h3>
+                        <p>The enchanting Water Palace situated in the middle of Man Sagar Lake, showcasing exquisite Rajput and Mughal architecture.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 3rem;">📍 Jaipur Location</h2>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227749.13567633026!2d75.65046405!3d26.8854!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db7d4e8f6287b%3A0x5e4287c6c7e8d2b6!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1234567890" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+
+        <!-- About Page -->
+        <div id="about" class="page">
+            <h2>ℹ️ About This Project</h2>
+            
+            <div class="card" style="margin-top: 2rem;">
+                <h3>👨‍💻 Project Information</h3>
+                <p style="margin-top: 1rem; line-height: 1.8;">
+                    <strong>Project:</strong> Smart City Dashboard – Jaipur<br>
+                    <strong>Team Members: </strong><br> Aryan Soni<br>
+                    <strong></strong> Anamika Jain<br>
+                    <strong></strong> Akansha Sharma <br>
+                    <strong>Submitted To: </strong>Abhimanyu Kumar <br> Assistant Professor, Poornima University<br>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p style="font-size: 1.2rem; margin-bottom: 1rem;">🏛️ Smart City Jaipur Portal</p>
+        <p>© 2025 Smart City Jaipur - Heritage & Development Portal</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">Empowering Jaipur with Technology & Tradition</p>
+    </footer>
+
+    <script>
+        // API Configuration
+        const API_URL = 'http://localhost:3000/api';
+        let currentUser = null;
+
+        // Check if user is already registered
+        window.addEventListener('load', function() {
+            const savedUser = localStorage.getItem('smartCityUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                hideRegistrationModal();
+                showWelcomeBanner();
+            }
+        });
+
+        // Registration Form Handler
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Clear previous errors
+            clearErrors();
+            
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                mobile: document.getElementById('mobile').value.trim(),
+                location: document.getElementById('location').value
+            };
+
+            // Client-side validation
+            if (!validateForm(formData)) {
+                return;
+            }
+
+            // Disable submit button
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Registering...';
+
+            try {
+                const response = await fetch(`${API_URL}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentUser = data.user;
+                    localStorage.setItem('smartCityUser', JSON.stringify(data.user));
+                    
+                    showSuccess(data.message);
+                    
+                    setTimeout(() => {
+                        hideRegistrationModal();
+                        showWelcomeBanner();
+                    }, 1500);
+                } else {
+                    showError('emailError', data.message);
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showError('emailError', 'Unable to connect to server. Please check if the backend is running.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Register & Continue';
+            }
+        });
+
+        // Form Validation
+        function validateForm(data) {
+            let isValid = true;
+
+            // Name validation
+            if (data.name.length < 3) {
+                showError('nameError', 'Name must be at least 3 characters');
+                isValid = false;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(data.email)) {
+                showError('emailError', 'Please enter a valid email address');
+                isValid = false;
+            }
+
+            // Mobile validation
+            const mobileRegex = /^[0-9]{10}$/;
+            if (!mobileRegex.test(data.mobile)) {
+                showError('mobileError', 'Mobile number must be exactly 10 digits');
+                isValid = false;
+            }
+
+            // Location validation
+            if (!data.location) {
+                showError('locationError', 'Please select your location');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Error Display
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        function clearErrors() {
+            const errors = document.querySelectorAll('.error-message');
+            errors.forEach(error => {
+                error.textContent = '';
+                error.classList.remove('show');
+            });
+        }
+
+        function showSuccess(message) {
+            const successElement = document.getElementById('successMessage');
+            successElement.textContent = '✅ ' + message;
+            successElement.classList.add('show');
+        }
+
+        // Modal Controls
+        function hideRegistrationModal() {
+            document.getElementById('registrationModal').classList.add('hidden');
+        }
+
+        function showWelcomeBanner() {
+            const banner = document.getElementById('welcomeBanner');
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userLocation').textContent = currentUser.location;
+            banner.style.display = 'block';
+        }
+
+        // Navigation and Page Switching
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            document.getElementById(pageId).classList.add('active');
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Digital Clock Function
+        function updateClock() {
+            const now = new Date();
+            
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+            
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            
+            const timeString = hours + ':' + minutes + ':' + seconds;
+            document.getElementById('clock').textContent = timeString;
+            
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            const dateString = now.toLocaleDateString('en-IN', options);
+            document.getElementById('date').textContent = dateString;
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Handle hash-based navigation
+        window.addEventListener('load', function() {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                showPage(hash);
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>
+                <h3>Project Overview</h3>
+                <p style="margin-top: 1rem; line-height: 1.8;">This Smart City Dashboard is developed to present Jaipur's unique blend of heritage and modern urban development. The portal showcases how Jaipur is transforming into a smart city while preserving its rich cultural legacy and royal heritage.</p>
+                
+                <p style="margin-top: 1rem; line-height: 1.8;">The website demonstrates the implementation of Smart City Mission objectives including improved infrastructure, digital services, sustainable development, and citizen-centric governance, all while maintaining the essence of the Pink City.</p>
+            </div>
+
+            <div class="card" style="margin-top: 2rem;">
+                <h3>🎯 Smart City Mission Goals</h3>
+                <ul style="margin-top: 1rem; line-height: 2;">
+                    <li>✅ Adequate water and electricity supply</li>
+                    <li>✅ Sanitation and solid waste management</li>
+                    <li>✅ Efficient urban mobility and public transport</li>
+                    <li>✅ Affordable housing for all</li>
+                    <li>✅ IT connectivity and digitalization</li>
+                    <li>✅ Sustainable environment</li>
+                    <li>✅ Safety and security of citizens</li>
+                    <li>✅ Health and education facilities</li>
+                </ul>
+            </div>
+
+            <div class="card" style="margin-top: 2rem;">
+                <h3>💻 Technologies Used</h3>
+                <p style="margin-top: 1rem; line-height: 1.8;">
+                    <strong>Frontend:</strong> HTML5, CSS3, JavaScript<br>
+                    <strong>Backend:</strong> Node.js, Express.js<br>
+                    <strong>Database:</strong> JSON File Storage<br>
+                    <strong>Design:</strong> Responsive Grid Layout, Flexbox, Google Fonts<br>
+                    <strong>Features:</strong> Real-time Clock, Interactive Navigation, Dynamic Content Loading, User Registration
+                </p>
+            </div>
+
+            <div class="card" style="margin-top: 2rem;">
+                <h3>👨‍💻 Team Members</h3>
+                <p style="margin-top: 1rem; line-height: 1.8;">
+                    Aryan Soni<br>
+                    Anamika Jain<br>
+                    Akansha Sharma<br>
+                </p>
